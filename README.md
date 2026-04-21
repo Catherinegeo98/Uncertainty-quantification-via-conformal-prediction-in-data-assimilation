@@ -1,23 +1,13 @@
 # Uncertainty-quantification-via-conformal-prediction-in-data-assimilation
-This repository contains the code and experiments for our study on applying Conformal Prediction (CP) to uncertainty quantification in a controlled, idealized data assimilation setting. The goal is to assess whether CP, a novel machine learning (ML) framework, can provide reliable uncertainty estimates for nonlinear dynamical systems.
-We conduct our experiments using a 1D Modified shallow water toy model that mimics convective processes, allowing for a clear and interpretable evaluation of uncertainty behavior. 
+This repository contains the code for our study on applying Conformal Prediction (CP) to uncertainty quantification in an idealized data assimilation setting using a 1D Modified Shallow Water model. We implement and compare three CP variants - Split Conformal Prediction (SCP), Normalised Conformal Prediction (NCP), and Conformalized Quantile Regression (CQR) and evaluate them using empirical coverage, interval width, Average Interval Score Loss (AISL), and ensemble mean snapshots. We also benchmark against traditional ensemble-based uncertainty measures like standard deviation interval and ensemble spread and investigate how CP-based perturbations influence the DA cycle in two configurations.
 
-We implement and compare three variants of CP:
-Standard Conformal Prediction (SCP),
-Normalized Conformal Prediction (NCP) and
-Conformalized Quantile Regression (CQR).
-
-These methods are evaluated using key uncertainty metrics, including:
-Empirical coverage,
-Interval width,
-Average Interval Score Loss (AISL) and
-Ensemble mean snapshots at different timesteps.
-
-In addition to CP-based approaches, we benchmark against traditional ensemble-based uncertainty measures, such as standard deviation intervals and ensemble spread, to understand the relative strengths of each method.
-A central component of this work is the integration of CP-derived uncertainty into the data assimilation (DA) cycle. We investigate how introducing CP-based perturbations influences the evolution of uncertainty during forecast–analysis updates.
-
-The repository provides:
-Implementation of CP methods (SCP, NCP, CQR),
-Tools for computing uncertainty metrics (coverage, AISL, interval width, snapshots).
-
+├── CQR/                                      # CQR training, inference, and DA scripts
+├── DA_CP_CQR/                                # DA cycling with CQR-based perturbations with both configurtaions
+├── DA_CP_NCP/                                # DA cycling with NCP-based perturbations with both configurtaions
+├── DA_CP_SCP/                                # DA cycling with SCP-based perturbations with both configurtaions
+├── AISL_evaluation.ipynb                     # AISL, coverage, and width for all CP methods
+├── Coverage_and_Interval_size.ipynb          # Coverage and interval size across all CP methods
+├── Plotting_snapshots_CPvsTraditional.ipynb  # Snapshot comparison: CP vs traditional approaches
+├── Snapshots_CP.ipynb                        # Snapshots for all CP methods
+└── RMSE_CP_NoCP.py                           # RMSE: CP-perturbed DA vs no-CP baseline for both configurtaions
 
