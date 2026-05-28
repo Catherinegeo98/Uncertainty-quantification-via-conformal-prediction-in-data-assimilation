@@ -1,9 +1,3 @@
-"""
-Created on Mon Aug  1 11:27:47 2016
-
-@author: Yvonne.Ruckstuhl
-"""
-
 from parameters import *
 from scipy import *
 import numpy as np
@@ -14,23 +8,13 @@ import random
 import math
    
 def assimilation(model,obspos,obs,method):
-    '''
-    input
-    model: background ensemble of size 3*nx x k
-    obspos: array of observation positions (0 means observed, 1 means not observed)
-    obs: perturbed observations
-    method: data assimilation algorithm (EnKF, QPEns or NN)
-    output
-    model: analysis ensemble of size 3*nx x k
-    an_train (only when training=True): unconstrained analysis ensemble of size 3*nx x k
-    '''
     obspos = np.arange(nx*mf)[obspos==0] # position of observations
     nobs=len(obspos) # number of observation
     R = Rdiag[obspos] # observation error covariance matrix   
     P = covP(model) # background error covariance matrix
     if irad > 0:
         P = C*P #localisation
-    K = np.dot(P[:,obspos],np.linalg.inv(P[np.ix_(obspos,obspos)]+np.diag(R))) # Kalman Gain
+    K = np.dot(P[:,obspos],np.linalg.inv(P[np.ix_(obspos,obspos)]+np.diag(R))) 
     D = obs[obspos,:]-model[obspos,:] # innovation
     
     if method == "EnKF" or method == "NN":
@@ -46,13 +30,13 @@ def assimilation(model,obspos,obs,method):
         G = np.identity(nx*mf)+np.dot(Ya.T,ToolR ) # Hessian of costfunction
         jr = np.arange(nx*(mf-1),nx*mf)  # Used to set constraints r >= 0  
         jh = np.arange(nx*(mf-2),nx*(mf-1))  
-        A = np.dot(np.ones(nx) ,np.asmatrix(La[jh,:])) #mass conservation constraint of h 
+        A = np.dot(np.ones(nx) ,np.asmatrix(La[jh,:])) 
         sol = np.zeros((nx*mf,k))       
         for i in range(0, k):
             c = np.dot(-ToolR.T, D[:, i])
             # The next line enforces both r >= 0 and mass constraint.
             solution = solvers.qp(matrix(G), matrix(c), matrix(-La[jr, :]), matrix(model[jr, i]), matrix(A), matrix(np.zeros((1, 1))))
-            sol[:, i] = np.asarray(solution['x']).reshape(-1)  # solution of minimisation problem
+            sol[:, i] = np.asarray(solution['x']).reshape(-1)  
         model = model + np.dot(La, sol)
 
  
@@ -62,28 +46,12 @@ def assimilation(model,obspos,obs,method):
         return model
 
 def covP(x):
-    '''
-    input
-    x: background ensemble of size 3*nx x k
-    output
-    error covariance matrix of size 3*nx x 3*nx
-    '''
     rho = 1.0
     x = np.sqrt(rho/(k-1.))*(x - np.mean(x,axis=1).reshape(nx*mf,1))
     return np.dot(x,x.T)
 
 
 def genobs(r3,r8, truth):
-    '''
-    input
-    r3: seed number for generation of observations
-    r8: seed number for generation of the observation perturbations
-    truth: array of size 3*nx representing the true state of the atmosphere
-    
-    output
-    obs: observations with Gaussian error for u and h and lognormal error for r of size 3*nx*k
-    obs_original: unperturbed observations of size 3*nx
-    '''
     obserr=np.zeros((mf*nx,1))
     for i in range(0,nx):
         obserr[i,0]=r3.gauss(mu=0,sigma=gaussobs[0])
