@@ -2,7 +2,7 @@ import numpy as np
 import math
 
 datadir='/raid/OUTPUT/'
-SAVEDIR ='/raid/OUTPUT/nsub120/nu10.0/10/models/msw_enkf_cqr/'
+SAVEDIR ='/raid/OUTPUT/nsub120/nu10.0/10/models/msw_DA_NN_CQR_new/'
 methods = ['EnKF','QPEns','NN']  # options are ['EnKF','QF',QPEns','NN']
 rad= 0
 training = False
